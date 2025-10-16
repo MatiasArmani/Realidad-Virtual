@@ -1,11 +1,10 @@
 import { PrismaClient, UserRole } from '@prisma/client';
 import bcrypt from 'bcryptjs';
-import { config } from '@/config';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  logger.info('🌱 Iniciando seed de base de datos...');
+  console.log('🌱 Iniciando seed de base de datos...');
 
   // Crear empresa de ejemplo
   const company = await prisma.company.upsert({
@@ -17,10 +16,10 @@ async function main() {
     },
   });
 
-  logger.info(`✅ Empresa creada: ${company.name}`);
+  console.log(`✅ Empresa creada: ${company.name}`);
 
   // Crear usuario admin
-  const hashedPassword = await bcrypt.hash('admin123', config.security.bcryptRounds);
+  const hashedPassword = await bcrypt.hash('admin123', 12);
   
   const adminUser = await prisma.user.upsert({
     where: { email: 'admin@empresa-demo.com' },
@@ -34,7 +33,7 @@ async function main() {
     },
   });
 
-  logger.info(`✅ Usuario admin creado: ${adminUser.email}`);
+  console.log(`✅ Usuario admin creado: ${adminUser.email}`);
 
   // Crear usuario regular
   const regularUser = await prisma.user.upsert({
@@ -49,7 +48,7 @@ async function main() {
     },
   });
 
-  logger.info(`✅ Usuario regular creado: ${regularUser.email}`);
+  console.log(`✅ Usuario regular creado: ${regularUser.email}`);
 
   // Crear proyecto de ejemplo
   const project = await prisma.project.create({
@@ -59,7 +58,7 @@ async function main() {
     },
   });
 
-  logger.info(`✅ Proyecto creado: ${project.name}`);
+  console.log(`✅ Proyecto creado: ${project.name}`);
 
   // Crear producto de ejemplo
   const product = await prisma.product.create({
@@ -70,7 +69,7 @@ async function main() {
     },
   });
 
-  logger.info(`✅ Producto creado: ${product.name}`);
+  console.log(`✅ Producto creado: ${product.name}`);
 
   // Crear versión de ejemplo
   const version = await prisma.version.create({
@@ -81,7 +80,7 @@ async function main() {
     },
   });
 
-  logger.info(`✅ Versión creada: ${version.tag}`);
+  console.log(`✅ Versión creada: ${version.tag}`);
 
   // Crear submodelo de ejemplo
   const submodel = await prisma.submodel.create({
@@ -92,14 +91,14 @@ async function main() {
     },
   });
 
-  logger.info(`✅ Submodelo creado: ${submodel.name}`);
+  console.log(`✅ Submodelo creado: ${submodel.name}`);
 
-  logger.info('🎉 Seed completado exitosamente!');
+  console.log('🎉 Seed completado exitosamente!');
 }
 
 main()
   .catch((e) => {
-    logger.error('❌ Error en seed:', e);
+    console.error('❌ Error en seed:', e);
     process.exit(1);
   })
   .finally(async () => {

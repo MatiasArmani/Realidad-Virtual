@@ -30,51 +30,31 @@ Web App de Visualización 3D con AR para empresas que permite mostrar maquinaria
 
 ## 🚀 Inicio Rápido
 
-### Prerrequisitos
+Ver **[docs/SETUP.md](docs/SETUP.md)** para instrucciones detalladas.
 
-- Node.js >= 18.0.0
-- Docker y Docker Compose
-- Git
+### Resumen
+```powershell
+# 1. Instalar dependencias del backend
+cd backend
+npm install
 
-### Instalación
+# 2. Iniciar PostgreSQL
+docker compose up -d
 
-1. **Clonar el repositorio**
-   ```bash
-   git clone <repo-url>
-   cd webapp-3d-ar
-   ```
+# 3. Configurar DB
+npx prisma generate
+npx prisma migrate dev --name init
+npm run db:seed
 
-2. **Instalar dependencias**
-   ```bash
-   npm install
-   ```
+# 4. Iniciar backend
+npm run dev
+```
 
-3. **Configurar variables de entorno**
-   ```bash
-   cp env.example .env
-   # Editar .env con tus configuraciones
-   ```
+**Testing**: `.\tests\test-etapa-2.ps1`
 
-4. **Iniciar servicios de desarrollo**
-   ```bash
-   # Iniciar base de datos y servicios
-   npm run docker:up
-   
-   # En otra terminal, iniciar la aplicación
-   npm run dev
-   ```
-
-5. **Acceder a la aplicación**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:3001
-   - MinIO Console: http://localhost:9001
+**Credenciales**: admin@empresa-demo.com / admin123
 
 ## 📋 Scripts Disponibles
-
-### Setup Rápido
-- **Windows**: `.\setup-dev.ps1`
-- **Linux/macOS**: `./setup-dev.sh`
-- **Manual**: Ver sección de instalación
 
 ### Desarrollo
 - `npm run dev` - Iniciar frontend y backend
