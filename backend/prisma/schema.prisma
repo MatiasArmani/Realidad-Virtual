@@ -1,0 +1,167 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  users     User[]
+  projects  Project[]
+
+  @@map("companies")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  role      UserRole @default(USER)
+  companyId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@map("users")
+}
+
+model Project {
+  id        String   @id @default(cuid())
+  name      String
+  companyId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  company  Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  products Product[]
+
+  @@map("projects")
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  name      String
+  sku       String?
+  projectId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  project  Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  versions Version[]
+  shares   Share[]
+
+  @@map("products")
+}
+
+model Version {
+  id        String   @id @default(cuid())
+  tag       String
+  notes     String?
+  productId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  product   Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  submodels Submodel[]
+  shares    Share[]
+
+  @@map("versions")
+}
+
+model Submodel {
+  id        String   @id @default(cuid())
+  name      String
+  code      String
+  versionId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  version Version @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  assets  Asset[]
+
+  @@map("submodels")
+}
+
+model Asset {
+  id         String    @id @default(cuid())
+  type       AssetType
+  url        String
+  sizeBytes  Int
+  hash       String
+  submodelId String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Relations
+  submodel Submodel @relation(fields: [submodelId], references: [id], onDelete: Cascade)
+
+  @@map("assets")
+}
+
+model Share {
+  id         String    @id @default(cuid())
+  token      String    @unique
+  expiresAt  DateTime
+  maxVisits  Int?
+  productId  String?
+  versionId  String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  // Relations
+  product Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+  version Version? @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  visits  Visit[]
+
+  @@map("shares")
+}
+
+model Visit {
+  id        String   @id @default(cuid())
+  ip        String
+  userAgent String
+  device    String?
+  arUsed    Boolean  @default(false)
+  startedAt DateTime @default(now())
+  endedAt   DateTime?
+  shareId   String
+  createdAt DateTime @default(now())
+
+  // Relations
+  share Share @relation(fields: [shareId], references: [id], onDelete: Cascade)
+
+  @@map("visits")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum AssetType {
+  GLB
+  USDZ
+  THUMB
+}
+
+
+

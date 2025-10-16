@@ -1,0 +1,88 @@
+### Variables
+@baseUrl = http://localhost:3001
+@email = admin@empresa-demo.com
+@password = admin123
+
+### 1. Health Check
+GET {{baseUrl}}/health
+
+### 2. Login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### 3. Register (nuevo usuario)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "nuevo@empresa-demo.com",
+  "name": "Nuevo Usuario",
+  "password": "password123",
+  "companyName": "Nueva Empresa"
+}
+
+### 4. Obtener empresa (requiere token)
+GET {{baseUrl}}/api/companies
+Authorization: Bearer {{token}}
+
+### 5. Crear proyecto
+POST {{baseUrl}}/api/projects
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Proyecto de Prueba"
+}
+
+### 6. Obtener proyectos
+GET {{baseUrl}}/api/projects
+Authorization: Bearer {{token}}
+
+### 7. Crear producto
+POST {{baseUrl}}/api/products
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Producto de Prueba",
+  "sku": "PROD-001",
+  "projectId": "{{projectId}}"
+}
+
+### 8. Obtener productos
+GET {{baseUrl}}/api/products
+Authorization: Bearer {{token}}
+
+### 9. Obtener productos por proyecto
+GET {{baseUrl}}/api/products?projectId={{projectId}}
+Authorization: Bearer {{token}}
+
+### 10. Actualizar producto
+PUT {{baseUrl}}/api/products/{{productId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Producto Actualizado",
+  "sku": "PROD-001-UPDATED"
+}
+
+### 11. Obtener producto específico
+GET {{baseUrl}}/api/products/{{productId}}
+Authorization: Bearer {{token}}
+
+### 12. Eliminar producto
+DELETE {{baseUrl}}/api/products/{{productId}}
+Authorization: Bearer {{token}}
+
+### 13. Eliminar proyecto
+DELETE {{baseUrl}}/api/projects/{{projectId}}
+Authorization: Bearer {{token}}
+
+
+
