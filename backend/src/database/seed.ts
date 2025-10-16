@@ -1,5 +1,10 @@
-import { PrismaClient, UserRole } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Cargar .env desde la raíz del proyecto
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 const prisma = new PrismaClient();
 
@@ -28,7 +33,7 @@ async function main() {
       email: 'admin@empresa-demo.com',
       name: 'Administrador',
       password: hashedPassword,
-      role: UserRole.ADMIN,
+      role: "ADMIN",
       companyId: company.id,
     },
   });
@@ -43,7 +48,7 @@ async function main() {
       email: 'user@empresa-demo.com',
       name: 'Usuario Regular',
       password: hashedPassword,
-      role: UserRole.USER,
+      role: "USER",
       companyId: company.id,
     },
   });

@@ -13,6 +13,16 @@ function Test-Endpoint {
         return $result
     } catch {
         Write-Host "❌ Error: $($_.Exception.Message)" -ForegroundColor Red
+        if ($_.Exception.Response) {
+            try {
+                $stream = $_.Exception.Response.GetResponseStream()
+                $reader = New-Object System.IO.StreamReader($stream)
+                $responseBody = $reader.ReadToEnd()
+                Write-Host "   Detalles: $responseBody" -ForegroundColor Red
+            } catch {
+                Write-Host "   No se pudo leer respuesta detallada" -ForegroundColor Red
+            }
+        }
         return $null
     }
 }
@@ -111,7 +121,13 @@ $project = Test-Endpoint "7️⃣ Crear nuevo proyecto" {
     $response
 }
 
-$projectId = $project.data.id
+if ($project) {
+    $projectId = $project.data.id
+    Write-Host "   ProjectId guardado: $projectId"
+} else {
+    Write-Host "   ❌ Error: No se pudo obtener projectId"
+    $projectId = "invalid-id"
+}
 
 # 8. Listar proyectos
 Test-Endpoint "8️⃣ Listar todos los proyectos" {
@@ -133,10 +149,14 @@ Test-Endpoint "9️⃣ Obtener proyecto específico" {
 
 # 10. Crear producto
 $product = Test-Endpoint "🔟 Crear nuevo producto" {
+    # Usar el proyecto que existe (Proyecto Demo)
+    $existingProject = Invoke-RestMethod -Uri "$baseUrl/api/projects" -Headers $headers
+    $demoProjectId = $existingProject.data[0].id
+    
     $body = @{
         name = "Máquina Test $(Get-Date -Format 'HHmmss')"
         sku = "TEST-$(Get-Random -Maximum 9999)"
-        projectId = $projectId
+        projectId = $demoProjectId
     } | ConvertTo-Json
 
     $response = Invoke-RestMethod -Uri "$baseUrl/api/products" -Method POST -Body $body -Headers $headers
@@ -146,7 +166,13 @@ $product = Test-Endpoint "🔟 Crear nuevo producto" {
     $response
 }
 
-$productId = $product.data.id
+if ($product) {
+    $productId = $product.data.id
+    Write-Host "   ProductId guardado: $productId"
+} else {
+    Write-Host "   ❌ Error: No se pudo obtener productId"
+    $productId = "invalid-id"
+}
 
 # 11. Listar productos
 Test-Endpoint "1️⃣1️⃣ Listar todos los productos" {
@@ -160,7 +186,11 @@ Test-Endpoint "1️⃣1️⃣ Listar todos los productos" {
 
 # 12. Filtrar productos por proyecto
 Test-Endpoint "1️⃣2️⃣ Filtrar productos por proyecto" {
-    $response = Invoke-RestMethod -Uri "$baseUrl/api/products?projectId=$projectId" -Headers $headers
+    # Usar el proyecto demo que existe
+    $existingProject = Invoke-RestMethod -Uri "$baseUrl/api/projects" -Headers $headers
+    $demoProjectId = $existingProject.data[0].id
+    
+    $response = Invoke-RestMethod -Uri "$baseUrl/api/products?projectId=$demoProjectId" -Headers $headers
     Write-Host "   Productos en proyecto: $($response.data.Count)"
     $response
 }

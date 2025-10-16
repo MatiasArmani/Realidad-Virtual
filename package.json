@@ -3,11 +3,6 @@
   "version": "1.0.0",
   "description": "Web App de Visualización 3D con AR para empresas",
   "private": true,
-  "workspaces": [
-    "frontend",
-    "backend",
-    "jobs"
-  ],
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "cd backend && npm run dev",

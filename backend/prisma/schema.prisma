@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model Company {
@@ -29,7 +29,7 @@ model User {
   email     String   @unique
   name      String
   password  String
-  role      UserRole @default(USER)
+  role      String   @default("USER")
   companyId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -102,14 +102,14 @@ model Submodel {
 }
 
 model Asset {
-  id         String    @id @default(cuid())
-  type       AssetType
+  id         String   @id @default(cuid())
+  type       String
   url        String
   sizeBytes  Int
   hash       String
   submodelId String
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   // Relations
   submodel Submodel @relation(fields: [submodelId], references: [id], onDelete: Cascade)
@@ -152,16 +152,9 @@ model Visit {
   @@map("visits")
 }
 
-enum UserRole {
-  ADMIN
-  USER
-}
-
-enum AssetType {
-  GLB
-  USDZ
-  THUMB
-}
+// Enums convertidos a strings para compatibilidad con SQLite
+// UserRole: "ADMIN" | "USER"
+// AssetType: "GLB" | "USDZ" | "THUMB"
 
 
 

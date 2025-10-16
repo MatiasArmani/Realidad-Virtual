@@ -32,21 +32,19 @@ Web App de Visualización 3D con AR para empresas que permite mostrar maquinaria
 
 Ver **[docs/SETUP.md](docs/SETUP.md)** para instrucciones detalladas.
 
-### Resumen
+### Setup Básico (SQLite)
 ```powershell
-# 1. Instalar dependencias del backend
-cd backend
+# 1. Instalar dependencias
 npm install
 
-# 2. Iniciar PostgreSQL
-docker compose up -d
-
-# 3. Configurar DB
+# 2. Configurar backend
+cd backend
+npm install
 npx prisma generate
 npx prisma migrate dev --name init
 npm run db:seed
 
-# 4. Iniciar backend
+# 3. Iniciar backend
 npm run dev
 ```
 

@@ -19,7 +19,7 @@ router.use(authenticate);
 const createValidation = [
   body('name').isLength({ min: 2 }).withMessage('Nombre debe tener al menos 2 caracteres'),
   body('sku').optional().isLength({ min: 1 }).withMessage('SKU no puede estar vacío'),
-  body('projectId').isUUID().withMessage('ID de proyecto inválido'),
+  body('projectId').isLength({ min: 1 }).withMessage('ID de proyecto requerido'),
 ];
 
 const updateValidation = [
@@ -28,7 +28,7 @@ const updateValidation = [
 ];
 
 const queryValidation = [
-  query('projectId').optional().isUUID().withMessage('ID de proyecto inválido'),
+  query('projectId').optional().isLength({ min: 1 }).withMessage('ID de proyecto inválido'),
 ];
 
 // Rutas

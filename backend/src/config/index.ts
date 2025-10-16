@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config();
+// Cargar .env desde la raíz del proyecto
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 export const config = {
   env: process.env.NODE_ENV || 'development',
